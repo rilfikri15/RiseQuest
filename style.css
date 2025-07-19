@@ -1,0 +1,506 @@
+/* Universal Box Sizing */
+html {
+    box-sizing: border-box;
+}
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+body {
+    font-family: 'Share Tech Mono', monospace; /* Futuristic monospaced font */
+    background-color: #0d1217; /* Very dark blue-gray */
+    color: #00e6e6; /* Aqua/Cyan glow color for default text */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align from top */
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    overflow-y: auto; /* Allow scrolling for long content */
+    perspective: 1000px; /* For 3D transforms if needed */
+}
+
+/* Main Screen Container */
+.main-screen {
+    background-color: rgba(15, 20, 25, 0.8); /* Slightly transparent dark background */
+    border: 1px solid #00e6e6; /* Aqua border */
+    box-shadow: 0 0 15px rgba(0, 230, 230, 0.5), /* Inner glow */
+                0 0 30px rgba(0, 230, 230, 0.3), /* Outer glow */
+                inset 0 0 5px rgba(0, 230, 230, 0.2); /* Inner subtle glow */
+    border-radius: 8px;
+    padding: 25px;
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Spacing between main sections */
+    position: relative;
+    overflow: hidden; /* For scanline animation */
+}
+
+/* Scanline Effect (Simple version) */
+.scanline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, transparent, rgba(0, 230, 230, 0.5), transparent);
+    animation: scanline-anim 8s infinite linear;
+    opacity: 0.3;
+}
+@keyframes scanline-anim {
+    0% { top: 0; }
+    50% { top: 100%; }
+    100% { top: 0; }
+}
+
+/* Header & Title */
+.header {
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #00e6e6;
+    position: relative;
+    margin-bottom: 15px;
+}
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px; /* Space between logo and title */
+    margin-bottom: 0; /* Adjusted for centered logo+title */
+}
+
+.app-logo {
+    width: 60px; /* Adjust size as needed */
+    height: 60px;
+    filter: drop-shadow(0 0 8px rgba(0, 230, 230, 0.7)); /* Subtle glow for the logo */
+}
+
+.screen-title {
+    font-family: 'Orbitron', sans-serif; /* Bold futuristic font */
+    font-size: 2.5em;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(0, 230, 230, 0.8), 0 0 20px rgba(0, 230, 230, 0.5); /* Neon glow */
+    letter-spacing: 2px;
+    margin: 0; /* Ensure no extra margin */
+    padding-bottom: 5px;
+}
+
+/* Status Section (Level, Title, XP Bar) */
+.status-section {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+    gap: 20px;
+}
+
+.status-box {
+    background-color: rgba(0, 230, 230, 0.05); /* Subtle transparent background */
+    border: 1px solid rgba(0, 230, 230, 0.3); /* Lighter aqua border */
+    border-radius: 5px;
+    padding: 15px 20px;
+    box-shadow: 0 0 8px rgba(0, 230, 230, 0.2);
+    text-align: center;
+    flex: 1; /* Allow boxes to grow */
+    min-width: 250px; /* Minimum width for each box */
+}
+
+.status-box .label {
+    font-size: 0.9em;
+    color: #a0f0f0; /* Lighter aqua */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.level-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3.5em;
+    font-weight: 700;
+    color: #61dafb; /* Bright aqua for level */
+    text-shadow: 0 0 10px #61dafb, 0 0 20px rgba(97, 218, 251, 0.5);
+    margin-bottom: 5px;
+    display: block;
+}
+
+.job-title {
+    font-size: 1.1em;
+    color: #a0f0f0;
+    white-space: nowrap; /* Prevent title from wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ellipsis if too long */
+}
+.job-title span {
+    color: #00e6e6; /* Consistent glow color */
+    font-weight: bold;
+}
+
+/* XP Bar */
+.xp-bar-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.progress-bar-container {
+    background-color: rgba(0, 230, 230, 0.1);
+    border: 1px solid rgba(0, 230, 230, 0.4);
+    border-radius: 5px;
+    height: 20px;
+    width: 100%;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%; /* Will be controlled by JS */
+    background: linear-gradient(to right, #00e6e6, #61dafb); /* Aqua to brighter blue */
+    box-shadow: 0 0 8px rgba(0, 230, 230, 0.8); /* Glow effect for the bar */
+    border-radius: 3px;
+    transition: width 0.5s ease-out; /* Smooth transition for XP fill */
+}
+
+.bar-label, .bar-value {
+    font-size: 0.9em;
+    color: #c0fafa;
+}
+.bar-value {
+    font-weight: bold;
+}
+
+/* Main Content Panels (Quest Creation & List) */
+.main-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px; /* Spacing between panels */
+}
+
+.panel {
+    background-color: rgba(0, 230, 230, 0.05);
+    border: 1px solid rgba(0, 230, 230, 0.3);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 8px rgba(0, 230, 230, 0.2);
+    flex: 1; /* Allow panels to grow */
+    min-width: 300px; /* Minimum width for each panel */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+.quest-creation-section {
+    min-width: 350px; /* Make quest creation slightly wider */
+}
+
+
+.panel-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5em;
+    color: #00e6e6;
+    text-shadow: 0 0 8px rgba(0, 230, 230, 0.6);
+    margin-bottom: 20px;
+    width: 100%; /* Ensure title takes full width */
+    text-align: center;
+}
+
+/* Form Styling (re-adjusted for new aesthetic) */
+#quest-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 0.9em;
+    color: #a0f0f0;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+textarea { /* text and textarea share basic styles now */
+    padding: 10px;
+    border: 1px solid #00eeef;
+    border-radius: 4px;
+    font-size: 1em;
+    background-color: #1a2027; /* Darker input background */
+    color: #e0e0e0;
+    box-shadow: inset 0 0 5px rgba(0, 230, 230, 0.1);
+}
+
+textarea { /* Specific for textarea */
+    resize: none; /* Disable resizing */
+    min-height: 80px; /* Optional: Set a minimum height */
+}
+
+select { /* select has its own styles including custom arrow */
+    padding: 10px;
+    border: 1px solid #00eeef;
+    border-radius: 4px;
+    font-size: 1em;
+    background-color: #1a2027;
+    color: #e0e0e0;
+    box-shadow: inset 0 0 5px rgba(0, 230, 230, 0.1);
+    -webkit-appearance: none; /* Remove default dropdown arrow for custom styling */
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%2300e6e6" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    cursor: pointer;
+}
+
+/* Specific styling for date inputs to use custom calendar icon */
+input[type="date"] {
+    padding: 10px;
+    border: 1px solid #00eeef;
+    border-radius: 4px;
+    font-size: 1em;
+    background-color: #1a2027;
+    color: #e0e0e0;
+    box-shadow: inset 0 0 5px rgba(0, 230, 230, 0.1);
+    cursor: pointer;
+
+    /* Hide default calendar icon */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    /* Custom calendar icon */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%2300e6e6" viewBox="0 0 16 16"><path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4V.5zm-2 2a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 .5.5v1H2V2.5zm12 1a.5.5 0 0 1 .5.5v7.5a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V4a.5.5 0 0 1 .5-.5h12z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 35px; /* Adjust padding to make space for the icon */
+}
+/* Hide the default calendar picker indicator specifically for webkit, 
+   just in case appearance:none isn't enough */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    width: 25px; /* Make it wide enough to click on */
+    cursor: pointer;
+}
+/* Set text color for date input when value is not set */
+input[type="date"]:invalid {
+    color: #777; /* Placeholder color */
+}
+/* Set text color when value is set */
+input[type="date"]:valid {
+    color: #e0e0e0;
+}
+
+/* Optional: Style for options in select dropdown */
+select option {
+    background-color: #1a2027; /* Dark background for options */
+    color: #e0e0e0;
+}
+
+.date-group {
+    display: flex;
+    gap: 15px;
+}
+.date-group > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Glow button effect */
+.glow-button {
+    background-color: #61dafb;
+    color: #282c34;
+    text-shadow: none;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 500;
+    letter-spacing: 1px;
+    padding: 12px 25px;
+    border: 1px solid #61dafb;
+    box-shadow: 0 0 10px rgba(97, 218, 251, 0.7); /* Button glow */
+    transition: all 0.3s ease;
+}
+
+.glow-button:hover {
+    background-color: #21a1f1;
+    box-shadow: 0 0 15px rgba(97, 218, 251, 1);
+    border-color: #21a1f1;
+    transform: translateY(-2px);
+}
+
+/* Quest List Specific Styles */
+#quests-container {
+    width: 100%;
+}
+
+.scrollable-content {
+    max-height: 400px; /* Limit height for scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding-right: 10px; /* Space for scrollbar */
+}
+/* Custom scrollbar for webkit browsers */
+.scrollable-content::-webkit-scrollbar {
+    width: 8px;
+}
+.scrollable-content::-webkit-scrollbar-track {
+    background: #2f343d;
+    border-radius: 10px;
+}
+.scrollable-content::-webkit-scrollbar-thumb {
+    background: #00e6e6;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 230, 230, 0.5);
+}
+.scrollable-content::-webkit-scrollbar-thumb:hover {
+    background: #61dafb;
+}
+
+
+.no-quests-message {
+    color: #999;
+    font-style: italic;
+    margin-top: 15px;
+}
+
+.month-group {
+    margin-bottom: 25px;
+    padding-top: 15px;
+    border-top: 1px dashed rgba(0, 230, 230, 0.3); /* Dashed separator */
+}
+
+.month-group:first-child {
+    border-top: none; /* No top border for the first group */
+    padding-top: 0;
+}
+
+.month-group h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2em;
+    color: #a0f0f0;
+    text-align: left;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.quest-item {
+    background-color: rgba(0, 230, 230, 0.03); /* Very subtle background for quest item */
+    border: 1px solid rgba(0, 230, 230, 0.2);
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    box-shadow: 0 0 5px rgba(0, 230, 230, 0.1);
+    position: relative;
+    transition: all 0.2s ease-in-out;
+}
+
+.quest-item.completed {
+    background-color: rgba(0, 230, 230, 0.01); /* Even more subtle for completed */
+    border-color: rgba(0, 230, 230, 0.1);
+    opacity: 0.5; /* Dim completed quests */
+    text-decoration: line-through; /* Strikethrough for completed */
+}
+
+.quest-item h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.1em;
+    color: #e0e0e0;
+    text-shadow: 0 0 5px rgba(0, 230, 230, 0.3);
+}
+
+.quest-item p {
+    margin: 0;
+    color: #b0b0b0;
+    font-size: 0.9em;
+}
+
+.quest-dates {
+    font-size: 0.8em;
+    color: #999;
+    margin-top: 5px;
+}
+
+.quest-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    width: 100%; /* Ensure buttons take full width if needed */
+}
+
+.quest-actions button {
+    padding: 8px 12px;
+    font-size: 0.9em;
+    max-width: none;
+    width: auto;
+    flex: 1; /* Make buttons fill available space */
+    font-family: 'Share Tech Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: none; /* Remove glow from these buttons for distinction */
+}
+
+.complete-button {
+    background-color: #2e86de; /* Royal blue */
+    color: white;
+    border: 1px solid #2e86de;
+}
+.complete-button:hover {
+    background-color: #1a6ac9;
+    box-shadow: 0 0 8px rgba(46, 134, 222, 0.6);
+}
+
+.delete-button {
+    background-color: #e74c3c; /* Red */
+    color: white;
+    border: 1px solid #e74c3c;
+}
+.delete-button:hover {
+    background-color: #c0392b;
+    box-shadow: 0 0 8px rgba(231, 76, 60, 0.6);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    .main-screen {
+        padding: 15px;
+        gap: 15px;
+    }
+    .screen-title {
+        font-size: 2em;
+    }
+    .status-box {
+        min-width: 100%; /* Stack status boxes */
+    }
+    .main-content {
+        flex-direction: column; /* Stack panels */
+    }
+    .panel, .quest-creation-section {
+        min-width: 100%;
+    }
+    .date-group {
+        flex-direction: column; /* Stack date inputs */
+        gap: 10px;
+    }
+    .logo-container {
+        flex-direction: column;
+        gap: 5px;
+    }
+    .app-logo {
+        width: 40px;
+        height: 40px;
+    }
+}
