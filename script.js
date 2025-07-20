@@ -205,6 +205,26 @@ document.addEventListener('DOMContentLoaded', () => {
         updateUI();
     }
 
+    // Fungsi untuk mengurangi XP dan menangani penurunan level
+    function deductXP(amount) {
+        user.xp -= amount;
+
+        // Loop untuk menurunkan level jika XP menjadi negatif atau di bawah batas level saat ini
+        while (user.xp < 0 && user.level > 1) {
+            user.level--;
+            user.xpNeededForNextLevel = calculateXPForNextLevel(user.level);
+            user.xp += user.xpNeededForNextLevel; // Tambahkan XP yang dibutuhkan level sebelumnya
+        }
+
+        // Pastikan XP tidak negatif jika sudah mencapai Level 1
+        if (user.level === 1 && user.xp < 0) {
+            user.xp = 0;
+        }
+
+        saveData();
+        updateUI();
+    }
+
     // Fungsi untuk mereset level (punishment)
     function applyPunishmentIfDue() {
         const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000; // 7 hari dalam milidetik
@@ -317,11 +337,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Hitung XP hanya saat quest diselesaikan (bukan dibuka kembali)
                 const xpEarned = calculateQuestXP(currentQuest.startDate, currentQuest.endDate, currentQuest.description, currentQuest.label);
                 addXP(xpEarned);
-                user.lastQuestCompletedTimestamp = Date.now(); // Update timestamp
+                user.lastQuestCompletedTimestamp = Date.now();
             } else {
-                // mengurangi XP saat quest dibuka kembali
+                // Jika quest di-re-open, kurangi XP
                 const xpLost = calculateQuestXP(currentQuest.startDate, currentQuest.endDate, currentQuest.description, currentQuest.label);
-                user.xp -= xpLost; // Ini bisa membuat XP jadi negatif jika tidak hati-hati
+                deductXP(xpLost); // Panggil fungsi deductXP yang baru
+                user.lastQuestCompletedTimestamp = null; // Reset timestamp karena quest belum selesai lagi
             }
             saveData();
             updateUI();
