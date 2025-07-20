@@ -61,7 +61,7 @@ Tampilan antarmuka didesain **futuristik**, menyerupai **HUD (Heads-Up Display)*
 
 ---
 
-### **FITUR APLIKASI**
+### **FITUR**
 #### **Manajemen Level dan XP**
 * User mulai dari **Level 1** dengan title **"Villager"**
 * XP ditampilkan dalam bentuk **progress bar**
